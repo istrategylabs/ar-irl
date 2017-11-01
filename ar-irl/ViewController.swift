@@ -13,14 +13,19 @@ import ARKit
 class ViewController: UIViewController, ARSCNViewDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
-    let button = SCNNode()
-    let nodeName = "button"
+    
+    // button setup
+    let buttonInner = SCNNode()
+    let buttonOuter = SCNNode()
+    let buttonOuterParent = SCNNode()
     var buttonAdded = false
+    let buttonInnerHeight = 0.006
     
     override func viewWillAppear(_ animated: Bool) {
         let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = .horizontal
-//        self.sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
+        // taking out origin/feature points for now but we will need some kind of UI
+        // self.sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
         self.sceneView.session.run(configuration)
     }
     
@@ -29,8 +34,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         self.sceneView.delegate = self
         self.registerGestureRecognizers()
         self.setUpButton()
-        let scene  = SCNScene()
-        self.sceneView.scene = scene
         self.sceneView.autoenablesDefaultLighting = true
     }
 
@@ -44,85 +47,80 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         self.sceneView.addGestureRecognizer(tapGestureRecognizer)
     }
 
+    // tap gesture recognizer function for adding the button (hit test against plane)
     @objc func tapped(sender: UITapGestureRecognizer) {
         let sceneView = sender.view as! ARSCNView
         let tapLocation = sender.location(in: sceneView)
         let hitTestButton = sceneView.hitTest(tapLocation, types: .existingPlaneUsingExtent)
+        
+        // only add a button if the plane hit test was successful and there is no existing button
         if !hitTestButton.isEmpty && !self.buttonAdded {
-            print("place button")
             self.addButton(hitTestResult: hitTestButton.first!)
         }
-//        let hitTestUnlock = sceneView.hitTest(tapLocation, options: [:])
-//        if !hitTestUnlock.isEmpty && buttonAdded {
-//            print("press button")
-//            let node = hitTestUnlock.first!.node
-//            if node.animationKeys.isEmpty{
-//                pressButton(node: node)
-//            }
-//        }
     }
     
+    // tap gesture function for pressing the button (excludes plane from hit test)
+    // possible that this could be combined with tapped() but wasn't working before
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let location = touches.first!.location(in: self.sceneView)
         var hitTestPressOptions = [SCNHitTestOption:Any]()
         hitTestPressOptions[SCNHitTestOption.boundingBoxOnly] = true
         let hitPressResults: [SCNHitTestResult] = self.sceneView.hitTest(location, options: hitTestPressOptions)
-        if self.buttonAdded {
-            if let hit = hitPressResults.first {
-                if let node = getParent(hit.node) {
-                    self.pressButton(node: node)
-                }
-            }
-        }
-//        if !hitPressResults.isEmpty && self.buttonAdded {
-//            print(hitPressResults.first!.node.geometry!)
-//            if hitPressResults.first?.node.geometry! ==  self.button.geometry! {
-//                if self.button.animationKeys.isEmpty {
-//                    print("press button")
-//                    self.pressButton(node: self.button)
-//                }
-//            }
-//        }
-    }
-    
-    func getParent(_ nodeFound:SCNNode?) -> SCNNode? {
-        if let node = nodeFound {
-            if node.name == self.nodeName {
-                return node
-            } else if let parent = node.parent {
-                return getParent(parent)
-            }
-        }
-        return nil
-    }
-    
-    func setUpButton() {
-        self.button.geometry = SCNBox(width: 0.1, height: 0.05, length: 0.1, chamferRadius: 0)
-        self.button.geometry?.firstMaterial?.diffuse.contents = UIColor.green
-        self.button.geometry?.firstMaterial?.specular.contents = UIColor.cyan
         
-    
+        // only press the button if the hit test was successful and button is not already being animated
+            if !hitPressResults.isEmpty && self.buttonInner.animationKeys.isEmpty {
+                self.pressButton(node: self.buttonInner)
+        }
     }
     
+    // get geometry of button set up before placing it
+    func setUpButton() {
+        // inner, pressable part of button
+        let buttonInnerRadius = 0.05
+        self.buttonInner.geometry = SCNCylinder(radius: CGFloat(buttonInnerRadius), height: CGFloat(self.buttonInnerHeight))
+        self.buttonInner.geometry?.firstMaterial?.diffuse.contents = UIColor.green
+        self.buttonInner.geometry?.firstMaterial?.specular.contents = UIColor.cyan
+        
+        // outer, stationary part of button - child of buttonOuterParent so that it is positioned w.r.t. buttonInner
+        // but does not move with buttonInner
+        // could put some safeguards on the geometry math, but we'll switch this out to be a nicer model anyway
+        let buttonOuterIRadius = buttonInnerRadius
+        let buttonOuterORadius = 1.2 * buttonOuterIRadius
+        let buttonOuterHeight = 0.0125
+        self.buttonOuter.geometry = SCNTube(innerRadius: CGFloat(buttonOuterIRadius), outerRadius: CGFloat(buttonOuterORadius), height: CGFloat(buttonOuterHeight))
+        self.buttonOuter.geometry?.firstMaterial?.diffuse.contents = UIColor.gray
+        self.buttonOuter.geometry?.firstMaterial?.specular.contents = UIColor.white
+        self.buttonOuter.position = SCNVector3(0, -0.5 * (self.buttonInnerHeight + buttonOuterHeight),0)
+        self.buttonOuterParent.addChildNode(self.buttonOuter)
+        
+        // flat disk to cover the bottom of the button - also a child of buttonOuterParent so that it doesn't move
+        let buttonBottomHeight = 0.001
+        let buttonBottom = SCNNode(geometry: SCNCylinder(radius: CGFloat(buttonOuterORadius), height: CGFloat(buttonBottomHeight)))
+        buttonBottom.geometry?.firstMaterial?.diffuse.contents = UIColor.gray
+        buttonBottom.geometry?.firstMaterial?.specular.contents = UIColor.white
+        buttonBottom.position = SCNVector3(0, -0.5 * (self.buttonInnerHeight + buttonBottomHeight) - buttonOuterHeight,0)
+        self.buttonOuterParent.addChildNode(buttonBottom)
+    }
+    
+    // get the location of the tap and place buttonInner and buttonOuterParent in the scene
     func addButton(hitTestResult: ARHitTestResult) {
         self.buttonAdded = true
         let transform = hitTestResult.worldTransform
         let thirdColumn = transform.columns.3
-        self.button.position = SCNVector3(thirdColumn.x, thirdColumn.y, thirdColumn.z)
-        self.sceneView.scene.rootNode.addChildNode(self.button)
+        self.buttonInner.position = SCNVector3(thirdColumn.x, thirdColumn.y, thirdColumn.z)
+        self.buttonOuterParent.position = self.buttonInner.position
+        self.sceneView.scene.rootNode.addChildNode(self.buttonInner)
+        self.sceneView.scene.rootNode.addChildNode(self.buttonOuterParent)
         
     }
 
-    
+    // animate buttonInner when pressed
     func pressButton(node: SCNNode) {
-//        let press = CABasicAnimation(keyPath: "position")
-        let press = CABasicAnimation(keyPath: "transform.scale.y")
-        press.fromValue = 1
-        press.toValue = 0.5
-//        press.fromValue = node.presentation.position
-//        press.toValue = SCNVector3(node.presentation.position.x, node.presentation.position.y - 0.03, node.presentation.position.z)
+        let press = CABasicAnimation(keyPath: "position")
+        press.fromValue = node.presentation.position
+        press.toValue = SCNVector3(node.presentation.position.x, node.presentation.position.y - Float(0.5 * self.buttonInnerHeight), node.presentation.position.z)
         press.autoreverses = true
-        press.duration = 0.5
+        press.duration = 0.3
         node.addAnimation(press, forKey: "position")
     }
 
