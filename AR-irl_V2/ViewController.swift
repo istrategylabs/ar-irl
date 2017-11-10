@@ -16,6 +16,14 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     @IBOutlet weak var sceneView: ARSCNView!
     let configuration = ARWorldTrackingConfiguration()
     
+//    let buttonTopScene = SCNScene(named: "Models.scnassets/Button_V1.3.scn")
+    var buttonTopScene = SCNScene()
+    var buttonTopNode = SCNNode()
+ 
+    //    let buttonBaseScene = SCNScene(named: "Models.scnassets/Button_V1.3.scn")
+    var buttonBaseScene = SCNScene()
+    var buttonBaseNode = SCNNode()
+    
     var buttonAdded: Bool = false
     var QRReader: Bool = true
     var detectedCenterAnchor: ARAnchor?
@@ -25,16 +33,13 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.configuration.planeDetection = .horizontal
-        self.sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
         self.sceneView.session.run(configuration)
         self.sceneView.autoenablesDefaultLighting = true
         self.sceneView.delegate = self
         self.sceneView.session.delegate = self
-//        let swipeUpGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(upSwipe))
-//        self.sceneView.addGestureRecognizer(swipeUpGestureRecognizer)
-//        swipeUpGestureRecognizer.direction = UISwipeGestureRecognizerDirection.up
-//        insertSpotLight(position: SCNVector3(0,3.0,1.0))
+
+        
+        insertSpotLight(position: SCNVector3(0,3.0,1.0))
     
         
         // Do any additional setup after loading the view, typically from a nib.
@@ -84,68 +89,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
 
         }
     
-//    @objc func handleTap(sender: UITapGestureRecognizer) {
-//        guard let sceneView = sender.view as? ARSCNView else {return}
-//        let touchLocation = sender.location(in: sceneView)
-//        let hitTestResult = sceneView.hitTest(touchLocation, types: .existingPlaneUsingExtent)
-//        // if hit test is not (!) empty add room
-//        if !hitTestResult.isEmpty {
-//            self.addButton(hitTestResult: hitTestResult.first!)
-//        } else{
-//            //
-//        }
-//    }
-//
-//    func addButton(hitTestResult: ARHitTestResult) {
-//        if buttonAdded == false {
-//            let buttonScene = SCNScene(named: "Models.scnassets/Button_V1.3.scn")
-//            let buttonNode = buttonScene!.rootNode.childNode(withName: "Top", recursively: true)
-//            let transform = hitTestResult.worldTransform
-//            let planeXposition = transform.columns.3.x
-//            let planeYposition = transform.columns.3.y
-//            let planeZposition = transform.columns.3.z
-//            buttonNode?.position = SCNVector3(planeXposition, planeYposition, planeZposition)
-//            self.sceneView.scene.rootNode.addChildNode(buttonNode!)
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-//                self.buttonAdded = true
-//            }
-//        }
-//    }
-    
-    
-
-//    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
-//
-//        guard anchor is ARPlaneAnchor else {return}
-//
-////
-////        if planeDetected.isHidden {
-////            planeDetected.alpha = 1.0
-////            UIView.animate(withDuration: 0.5) {
-////                self.planeDetected.alpha = 0.0
-////            }
-////        } else {
-////            UIView.animate(withDuration: 0.5) {
-////                self.planeDetected.alpha = 1.0
-////            }
-////
-////        }
-//
-//                                    //need to make sure below happens on the main thread
-//                                    DispatchQueue.main.async {
-//                                        // unhide detected plane
-////                                        self.planeDetected.isHidden = false
-//                                        self.sceneView.debugOptions = []
-//                                        // make label go away after 2 more seconds
-////                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-////                                            self.planeDetected.isHidden = true
-////                                            self.TaptoReveal.isHidden = false
-////                                        }
-////                                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-////                                            self.TaptoReveal.isHidden = true
-////                                        }
-//                                    }
-//    }
     
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
         let estimate = self.sceneView.session.currentFrame?.lightEstimate
@@ -263,31 +206,70 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         // If this is our anchor, create a node
         if self.detectedCenterAnchor?.identifier == anchor.identifier {
             
-            let buttonScene = SCNScene(named: "Models.scnassets/Button_V1.3.scn")
-            let buttonNode = buttonScene!.rootNode.childNode(withName: "Top", recursively: true)
-            buttonNode!.position = SCNVector3(0,0,0)
-            //            self.sceneView.scene.rootNode.addChildNode(planeNode)
-            self.buttonAdded = true
-            QRReader = false
-//            imageView.stopAnimating()
-//            self.imageView.isHidden = false
+            // Button Top Node
+            self.buttonTopScene = SCNScene(named: "Models.scnassets/Button_V1.3.scn")!
+            self.buttonTopNode = (self.buttonTopScene.rootNode.childNode(withName: "Top", recursively: true))!
+            
+            self.buttonTopNode.position = SCNVector3(0,0,0)
+           
+            // Button Bottom Node
+            self.buttonBaseScene = SCNScene(named: "Models.scnassets/Button_V1.3.scn")!
+            self.buttonBaseNode = (self.buttonBaseScene.rootNode.childNode(withName: "Base", recursively: true))!
+            self.buttonBaseNode.position = SCNVector3(0,0,0)
             
             let wrapperNode = SCNNode()
-            wrapperNode.addChildNode(buttonNode!)
+            wrapperNode.addChildNode(self.buttonTopNode)
+            wrapperNode.addChildNode(self.buttonBaseNode)
+            
             //wrapper may not be necessary w/o scn but use for now
-
             wrapperNode.transform = SCNMatrix4(anchor.transform)
+           
+            self.buttonAdded = true
+            QRReader = false
             
             return wrapperNode
+            
+
         }
         
         return nil
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+//        @objc func tapped(sender: UITapGestureRecognizer) {
+//            guard let sceneView = sender.view as? ARSCNView else {return}
+//            let touchLocation = sender.location(in: sceneView)
+//            let hitTestResult = sceneView.hitTest(touchLocation, types: .existingPlaneUsingExtent)
+//            // if hit test is not (!) empty add room
+//            if !hitTestResult.isEmpty {
+//                self.pushButton(hitTestResult: hitTestResult.first!)
+//            } else{
+//                //
+//            }
+//        }
+    
+    // tap gesture function for pressing the button (excludes plane from hit test)
+    // possible that this could be combined with tapped() but wasn't working before
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        let location = touches.first!.location(in: self.sceneView)
+        var hitTestPressOptions = [SCNHitTestOption:Any]()
+        hitTestPressOptions[SCNHitTestOption.boundingBoxOnly] = true
+        let hitPressResults: [SCNHitTestResult] = self.sceneView.hitTest(location, options: hitTestPressOptions)
+
+
+//        // only press the button if the hit test was successful and button is not already being animated
+//        if !hitPressResults.isEmpty && self.buttonTopScene.animationKeys.isEmpty {
+            self.pressButton(node: buttonTopNode)
+//        }
     }
+    
+    func pressButton(node: SCNNode) {
+        let press = CABasicAnimation(keyPath: "position")
+            press.fromValue = node.presentation.position
+            press.toValue = SCNVector3(node.presentation.position.x, node.presentation.position.y - Float(0.25.inchesToMeters), node.presentation.position.z)
+            press.autoreverses = true
+            press.duration = 0.2
+            node.addAnimation(press, forKey: "position")
+            }
     
     @IBAction func reset(_ sender: Any) {
         sceneView.scene.rootNode.enumerateChildNodes { (node, _) in
@@ -302,6 +284,10 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         
     }
     
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
 }
 
 extension Int {
@@ -312,3 +298,10 @@ extension Int {
 extension Int {
     var inchesToMeters: Double { return Double(self) * 0.0254}
 }
+
+extension Double {
+    var inchesToMeters: Double { return Double(self) * 0.0254}
+}
+
+
+
