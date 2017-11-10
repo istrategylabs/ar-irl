@@ -256,10 +256,10 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         let hitPressResults: [SCNHitTestResult] = self.sceneView.hitTest(location, options: hitTestPressOptions)
 
 
-//        // only press the button if the hit test was successful and button is not already being animated
-//        if !hitPressResults.isEmpty && self.buttonTopScene.animationKeys.isEmpty {
+        // only press the button if the hit test was successful and button is not already being animated
+        if !hitPressResults.isEmpty && buttonTopNode.animationKeys.isEmpty {
             self.pressButton(node: buttonTopNode)
-//        }
+        }
     }
     
     func pressButton(node: SCNNode) {
