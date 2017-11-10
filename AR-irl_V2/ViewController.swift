@@ -31,6 +31,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     var created = false
     let QR1 = "picasso"
     
+//    let material1 = #imageLiteral(resourceName: "Button_tex_v1_0005_Background.png")
+//    let materiral2 = #imageLiteral(resourceName: "Button_tex_v1_0004_Ambient-Occlusion.png")
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.sceneView.session.run(configuration)
@@ -269,6 +272,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             press.autoreverses = true
             press.duration = 0.2
             node.addAnimation(press, forKey: "position")
+        
             }
     
     @IBAction func reset(_ sender: Any) {
