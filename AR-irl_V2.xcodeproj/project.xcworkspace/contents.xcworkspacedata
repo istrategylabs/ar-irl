@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:ar-irl.xcodeproj">
+      location = "self:AR-irl_V2.xcodeproj">
    </FileRef>
 </Workspace>

@@ -1,9 +1,9 @@
 //
 //  AppDelegate.swift
-//  ar-irl
+//  AR-irl_V2
 //
-//  Created by Trish O'Connor on 10/27/17.
-//  Copyright © 2017 Trish O'Connor. All rights reserved.
+//  Created by Adam Hughes on 11/2/17.
+//  Copyright © 2017 Adam Hughes. All rights reserved.
 //
 
 import UIKit

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Copy-Reg.otf">
+            <string>Copy-Reg</string>
+        </array>
+    </customFonts>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="AR_irl_V2" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MqD-a5-mHi">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </arscnView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S86-Oa-qdU">
+                                <rect key="frame" x="295" y="595.5" width="50" height="41.5"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="S86-Oa-qdU" secondAttribute="height" multiplier="41:34" id="RLM-ez-pEF"/>
+                                    <constraint firstAttribute="width" constant="50" id="bVu-Bm-zvy"/>
+                                </constraints>
+                                <state key="normal" image="Restart.png">
+                                    <color key="titleColor" white="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="reset:" destination="BYZ-38-t0r" eventType="touchUpInside" id="eMD-an-Ll1"/>
+                                </connections>
+                            </button>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="TAP TO REVEAL" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KpJ-NX-x0T">
+                                <rect key="frame" x="95" y="235" width="185" height="29.5"/>
+                                <fontDescription key="fontDescription" name="Copy-Reg" family="Copy" pointSize="25"/>
+                                <color key="textColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                                <size key="shadowOffset" width="-1" height="-1"/>
+                            </label>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="PLANE DETECTED" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gqb-PH-2uf">
+                                <rect key="frame" x="80" y="235" width="214.5" height="29.5"/>
+                                <fontDescription key="fontDescription" name="Copy-Reg" family="Copy" pointSize="25"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                                <size key="shadowOffset" width="-1" height="-1"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="MqD-a5-mHi" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="38p-zi-gBY"/>
+                            <constraint firstItem="KpJ-NX-x0T" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="215" id="3Pj-y0-nmn"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="S86-Oa-qdU" secondAttribute="trailing" constant="30" id="MYM-gL-yWh"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="S86-Oa-qdU" secondAttribute="trailing" constant="30" id="P8A-8g-TLc"/>
+                            <constraint firstItem="MqD-a5-mHi" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="YTd-YQ-chu"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="S86-Oa-qdU" secondAttribute="bottom" constant="30" id="ZDw-pH-tQF"/>
+                            <constraint firstItem="gqb-PH-2uf" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="asj-2K-6HZ"/>
+                            <constraint firstItem="MqD-a5-mHi" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="hOe-pm-oM4"/>
+                            <constraint firstItem="KpJ-NX-x0T" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="iIh-YB-YMh"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="S86-Oa-qdU" secondAttribute="bottom" constant="30" id="qoX-o4-W6h"/>
+                            <constraint firstItem="gqb-PH-2uf" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="215" id="tti-ob-0Ec"/>
+                            <constraint firstItem="MqD-a5-mHi" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="w7I-Ad-msD"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="TaptoReveal" destination="KpJ-NX-x0T" id="uPH-iu-r5f"/>
+                        <outlet property="planeDetected" destination="gqb-PH-2uf" id="dIu-9Y-Av4"/>
+                        <outlet property="sceneView" destination="MqD-a5-mHi" id="DQV-5a-Vdx"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="116" y="117.39130434782609"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Restart.png" width="164" height="136"/>
+    </resources>
+</document>
