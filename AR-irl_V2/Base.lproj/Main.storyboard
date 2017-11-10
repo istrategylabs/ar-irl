@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <array key="Copy-Reg.otf">
-            <string>Copy-Reg</string>
-        </array>
-    </customFonts>
     <scenes>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -39,41 +34,36 @@
                                     <action selector="reset:" destination="BYZ-38-t0r" eventType="touchUpInside" id="eMD-an-Ll1"/>
                                 </connections>
                             </button>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="TAP TO REVEAL" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KpJ-NX-x0T">
-                                <rect key="frame" x="95" y="235" width="185" height="29.5"/>
-                                <fontDescription key="fontDescription" name="Copy-Reg" family="Copy" pointSize="25"/>
-                                <color key="textColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                                <size key="shadowOffset" width="-1" height="-1"/>
-                            </label>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="PLANE DETECTED" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gqb-PH-2uf">
-                                <rect key="frame" x="80" y="235" width="214.5" height="29.5"/>
-                                <fontDescription key="fontDescription" name="Copy-Reg" family="Copy" pointSize="25"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                                <size key="shadowOffset" width="-1" height="-1"/>
-                            </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="1CQ-1K-WQl">
+                                <rect key="frame" x="112.5" y="258.5" width="150" height="150"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="J7Q-Cb-JLe">
+                                        <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="150" id="OVm-Ld-MZ1"/>
+                                            <constraint firstAttribute="width" constant="150" id="uYL-xe-Q65"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="MqD-a5-mHi" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="38p-zi-gBY"/>
-                            <constraint firstItem="KpJ-NX-x0T" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="215" id="3Pj-y0-nmn"/>
+                            <constraint firstItem="1CQ-1K-WQl" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="AxH-WQ-kps"/>
+                            <constraint firstItem="1CQ-1K-WQl" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="FEh-Tc-gDY"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="S86-Oa-qdU" secondAttribute="trailing" constant="30" id="MYM-gL-yWh"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="S86-Oa-qdU" secondAttribute="trailing" constant="30" id="P8A-8g-TLc"/>
                             <constraint firstItem="MqD-a5-mHi" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="YTd-YQ-chu"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="S86-Oa-qdU" secondAttribute="bottom" constant="30" id="ZDw-pH-tQF"/>
-                            <constraint firstItem="gqb-PH-2uf" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="asj-2K-6HZ"/>
                             <constraint firstItem="MqD-a5-mHi" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="hOe-pm-oM4"/>
-                            <constraint firstItem="KpJ-NX-x0T" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="iIh-YB-YMh"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="S86-Oa-qdU" secondAttribute="bottom" constant="30" id="qoX-o4-W6h"/>
-                            <constraint firstItem="gqb-PH-2uf" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="215" id="tti-ob-0Ec"/>
                             <constraint firstItem="MqD-a5-mHi" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="w7I-Ad-msD"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
-                        <outlet property="TaptoReveal" destination="KpJ-NX-x0T" id="uPH-iu-r5f"/>
-                        <outlet property="planeDetected" destination="gqb-PH-2uf" id="dIu-9Y-Av4"/>
+                        <outlet property="imageView" destination="J7Q-Cb-JLe" id="BSn-RR-xQa"/>
                         <outlet property="sceneView" destination="MqD-a5-mHi" id="DQV-5a-Vdx"/>
                     </connections>
                 </viewController>
