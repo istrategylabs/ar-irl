@@ -1,0 +1,6 @@
+framework module Pods_AR_irl_V2 {
+  umbrella header "Pods-AR-irl_V2-umbrella.h"
+
+  export *
+  module * { export * }
+}

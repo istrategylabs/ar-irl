@@ -31,24 +31,35 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     var created = false
     let QR1 = "picasso"
     
+    // Photon setup
+    var photon: ParticleDevice?
+    var deviceFound: Bool = false
+    
 //    let material1 = #imageLiteral(resourceName: "Button_tex_v1_0005_Background.png")
 //    let materiral2 = #imageLiteral(resourceName: "Button_tex_v1_0004_Ambient-Occlusion.png")
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.sceneView.session.run(configuration)
-        self.sceneView.autoenablesDefaultLighting = true
-        self.sceneView.delegate = self
-        self.sceneView.session.delegate = self
-
-        
-        insertSpotLight(position: SCNVector3(0,3.0,1.0))
-    
+//        self.sceneView.session.run(configuration)
+//        self.sceneView.autoenablesDefaultLighting = true
+//        self.sceneView.delegate = self
+//        self.sceneView.session.delegate = self
+//
+//
+//        insertSpotLight(position: SCNVector3(0,3.0,1.0))
         
         // Do any additional setup after loading the view, typically from a nib.
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        
+        self.sceneView.session.run(configuration)
+        self.sceneView.autoenablesDefaultLighting = true
+        self.sceneView.delegate = self
+        self.sceneView.session.delegate = self
+        
+        
+        insertSpotLight(position: SCNVector3(0,3.0,1.0))
         
         var imagesNames = ["Comp 1_00", "Comp 1_01", "Comp 1_02", "Comp 1_03", "Comp 1_04", "Comp 1_05", "Comp 1_06","Comp 1_07", "Comp 1_08", "Comp 1_09", "Comp 1_10", "Comp 1_11", "Comp 1_12", "Comp 1_13", "Comp 1_14", "Comp 1_15", "Comp 1_16", "Comp 1_17", "Comp 1_18", "Comp 1_19"]
         
@@ -273,7 +284,48 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             press.duration = 0.2
             node.addAnimation(press, forKey: "position")
         
+        switchLight()
+        
+    }
+    
+    func switchLight() {
+        let funcArgs = [""]
+        self.photon?.callFunction("lights", withArguments: funcArgs) { (resultCode : NSNumber?, error : Error?) -> Void in
+            if (error == nil) {
+                print("LED on D7 successfully turned on")
             }
+            else{
+                print("error")
+            }
+        }
+    }
+    
+    @IBAction func connectToParticleButton(_ sender: Any) {
+        var setupController = ParticleSetupMainController()
+        self.present(setupController!, animated: true, completion: nil)
+    }
+    
+    @IBAction func findDeviceButton(_ sender: Any) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.deviceFound = false
+            ParticleCloud.sharedInstance().getDevices { (devices:[ParticleDevice]?, error:Error?) -> Void in
+                if let _ = error {
+                    print("Check your internet connectivity")
+                }
+                else {
+                    if let d = devices {
+                        for device in d {
+                            if device.name == "ar-irl-photon" {
+                                self.photon = device
+                                self.deviceFound = true
+                                print("found device")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     @IBAction func reset(_ sender: Any) {
         sceneView.scene.rootNode.enumerateChildNodes { (node, _) in
