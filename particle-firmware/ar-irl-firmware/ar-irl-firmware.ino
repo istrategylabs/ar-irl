@@ -7,6 +7,7 @@ bool state = false;
 #define NUM_LED 64
 #define PIX_TYPE WS2812B
 
+STARTUP(WiFi.selectAntenna(ANT_AUTO));
 Adafruit_NeoPixel square = Adafruit_NeoPixel(NUM_LED, LED_PIN, PIX_TYPE);
 
 void setup() {
