@@ -498,7 +498,7 @@
 				DEVELOPMENT_TEAM = Z3QGFL558K;
 				INFOPLIST_FILE = "AR-irl_V2/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "ISL.com.AR-irl-V2";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.istrategylabs.AR-IRL";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -514,7 +514,7 @@
 				DEVELOPMENT_TEAM = Z3QGFL558K;
 				INFOPLIST_FILE = "AR-irl_V2/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "ISL.com.AR-irl-V2";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.istrategylabs.AR-IRL";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
