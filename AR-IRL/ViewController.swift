@@ -72,7 +72,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             imageView.startAnimating()
         } else {
             imageView.stopAnimating()
-            imageView.isHidden = false
+            imageView.isHidden = true
         }
     }
     
@@ -124,6 +124,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     public func session(_ session: ARSession, didUpdate frame: ARFrame) {
         // don't keep looking once it's placed
         if self.buttonAdded {
+            self.imageView.stopAnimating()
+            self.imageView.isHidden = true
             return
         }
         
