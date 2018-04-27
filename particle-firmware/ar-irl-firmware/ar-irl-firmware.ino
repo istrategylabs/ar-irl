@@ -4,7 +4,7 @@
 
 bool state = false;
 #define LED_PIN 6
-#define NUM_LED 64
+#define NUM_LED 24
 #define PIX_TYPE WS2812B
 
 STARTUP(WiFi.selectAntenna(ANT_AUTO));
@@ -22,7 +22,7 @@ void loop() {
 
 int switchLight(String extra){
     if (state) {
-        colorFill(square.Color(0,50,0));
+        colorFill(square.Color(0,0,50));
         state = false;
         return 1;
     }
