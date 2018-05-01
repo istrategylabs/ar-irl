@@ -15,22 +15,36 @@ void setup() {
     colorFill(square.Color(0,0,0));
     square.show();
     Particle.function("lights", switchLight);
+    Particle.function("lightsOn", turnOnLight);
+    Particle.function("lightsOff", turnOffLight);
 }
 
 void loop() {
 }
 
 int switchLight(String extra){
-    if (state) {
-        colorFill(square.Color(0,0,50));
-        state = false;
-        return 1;
-    }
-    else {
-        colorFill(square.Color(0,0,0));
-        state = true;
-        return 0;
-    }
+  if (state) {
+    colorFill(square.Color(0,0,50));
+    state = false;
+    return 1;
+  }
+  else {
+    colorFill(square.Color(0,0,0));
+    state = true;
+    return 0;
+  }
+}
+
+int turnOffLight(String extra) {
+  colorFill(square.Color(0,0,0));
+  state = true;
+  return 0;
+}
+
+int turnOnLight(String extra) {
+  colorFill(square.Color(0,0,50));
+  state = false;
+  return 1;
 }
 
 void colorFill(uint32_t c) {
