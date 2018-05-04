@@ -20,6 +20,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     var buttonTopNode = SCNNode()
     var buttonBaseNode = SCNNode()
     
+    var keypadScene = SCNScene()
+    var keypadNodes = [SCNNode]()
+    
     var buttonAdded: Bool = false
     var QRReader: Bool = true
     var detectedCenterAnchor: ARAnchor?
@@ -32,7 +35,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     var deviceFound: Bool = false
     
     // code logic
-    let code = "redgreenorangeblue"
+    let code = "3874"
     var entry = ""
     var cover = SCNNode()
     
@@ -209,7 +212,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         return nil
     }
 
-    func createKeypad(anchor: ARAnchor) -> SCNNode {
+    func createGeometryKeypad(anchor: ARAnchor) -> SCNNode {
         let red = SCNNode(geometry: SCNBox(width: 0.02, height: 0.01, length: 0.02, chamferRadius: 0))
         red.geometry?.firstMaterial?.diffuse.contents = UIColor.red
         red.position = SCNVector3(0.0125, 0, 0.0125)
@@ -261,6 +264,43 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         return wrapperNode
     }
 
+    func createKeypad(anchor: ARAnchor) -> SCNNode {
+        // get scene
+        self.keypadScene = SCNScene(named: "Models.scnassets/Keypad.scn")!
+        
+        // get base node
+        let baseNode = (self.keypadScene.rootNode.childNode(withName: "BASE", recursively: true))!
+        baseNode.position = SCNVector3(0,0,0)
+        baseNode.eulerAngles = SCNVector3(0,180.degreesToRadians,0)
+        self.keypadNodes.append(baseNode)
+        
+        // get number nodes
+        let xPositions = [-0.035, 0, 0.035, -0.035, 0, 0.035, -0.035, 0, 0.035]
+        let zPositions = [-0.05, -0.05, -0.05, -0.015, -0.015, -0.015, 0.02, 0.02, 0.02]
+        
+        for index in 1...9 {
+            let tempNode = (self.keypadScene.rootNode.childNode(withName: "Cube.\(String(index))", recursively: true))!
+            tempNode.position = SCNVector3(xPositions[index - 1], 0.02, zPositions[index - 1])
+            tempNode.eulerAngles = SCNVector3(0,180.degreesToRadians,0)
+            self.keypadNodes.append(tempNode)
+        }
+        
+        // get enter nodes
+        let enterNode = (self.keypadScene.rootNode.childNode(withName: "ENTER", recursively: true))!
+        enterNode.position = SCNVector3(0, 0.02, 0.06)
+        enterNode.eulerAngles = SCNVector3(0, 180.degreesToRadians, 0)
+        self.keypadNodes.append(enterNode)
+        
+        // add all to wrapper node to return
+        let wrapperNode = SCNNode()
+        for node in keypadNodes {
+            wrapperNode.addChildNode(node)
+        }
+        wrapperNode.transform = SCNMatrix4(anchor.transform)
+        
+        return wrapperNode
+    }
+    
     func createButton(name: String, anchor:ARAnchor) -> SCNNode {
         // Button Top Node
         self.buttonScene = SCNScene(named: "Models.scnassets/Button_V1.3.scn")!
@@ -305,24 +345,20 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         // only press the button if the hit test was successful and button is not already being animated
         if !hitPressResults.isEmpty && buttonTopNode.animationKeys.isEmpty {
             let nodeTouched = hitPressResults[0].node
-            if (nodeTouched.name == "ignore") {
+            if (nodeTouched.name == "BASE") {
                 return
             }
             
             self.pressButton(node: nodeTouched)
             print(nodeTouched.name ?? "none")
-            if (nodeTouched.name == "clear") {
-                print("clearing")
-                clearCode()
-            } else if (nodeTouched.name == "enter") {
+            if (nodeTouched.name == "ENTER") {
                 print("entering")
                 checkCode()
             } else {
-                self.entry.append(nodeTouched.name ?? "")
+                self.entry.append((nodeTouched.name?.last!)!)
                 print("adding to entry")
                 print("entry: " + self.entry)
             }
-//            self.pressButton(node: buttonTopNode)
         }
     }
 
@@ -426,13 +462,13 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             clearCode()
         } else {
             print ("wrong")
+            turnOffLight()
             // possibly show red lights or something
             clearCode()
         }
     }
 
     func clearCode() {
-        turnOffLight()
         entry = ""
     }
 }
