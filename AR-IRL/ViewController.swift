@@ -30,6 +30,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     var created = false
     let QR1 = "picasso"
     
+    var timer = Timer()
+    
     // Photon setup
     var photon: ParticleDevice?
     var deviceFound: Bool = false
@@ -371,38 +373,63 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             node.addAnimation(press, forKey: "position")
     }
 
-    func switchLight() {
+//    func switchLight() {
+//        let funcArgs = [""]
+//        self.photon?.callFunction("lights", withArguments: funcArgs) { (resultCode : NSNumber?, error : Error?) -> Void in
+//            if (error == nil) {
+//                print("switchLights particle function called")
+//            }
+//            else{
+//                print("switchLights particle function error")
+//            }
+//        }
+//    }
+//
+//    func turnOnLight() {
+//        let funcArgs = [""]
+//        self.photon?.callFunction("lightsOn", withArguments: funcArgs) { (resultCode : NSNumber?, error : Error?) -> Void in
+//            if (error == nil) {
+//                print("lightsOn particle function called")
+//            }
+//            else{
+//                print("lightsOn particle function error")
+//            }
+//        }
+//    }
+//
+//    func turnOffLight() {
+//        let funcArgs = [""]
+//        self.photon?.callFunction("lightsOff", withArguments: funcArgs) { (resultCode : NSNumber?, error : Error?) -> Void in
+//            if (error == nil) {
+//                print("lightsOff particle function called")
+//            }
+//            else{
+//                print("lightsOff particle function error")
+//            }
+//        }
+//    }
+    
+    func lockBox() {
+        self.timer.invalidate()
         let funcArgs = [""]
-        self.photon?.callFunction("lights", withArguments: funcArgs) { (resultCode : NSNumber?, error : Error?) -> Void in
+        self.photon?.callFunction("lock", withArguments: funcArgs) { (resultCode : NSNumber?, error : Error?) -> Void in
             if (error == nil) {
-                print("switchLights particle function called")
+                print("lock particle function called")
             }
             else{
-                print("switchLights particle function error")
+                print("lock particle function error")
             }
         }
     }
-
-    func turnOnLight() {
+    
+    func unlockBox() {
         let funcArgs = [""]
-        self.photon?.callFunction("lightsOn", withArguments: funcArgs) { (resultCode : NSNumber?, error : Error?) -> Void in
+        self.photon?.callFunction("unlock", withArguments: funcArgs) { (resultCode : NSNumber?, error : Error?) -> Void in
             if (error == nil) {
-                print("lightsOn particle function called")
+                print("unlock particle function called")
             }
             else{
-                print("lightsOn particle function error")
-            }
-        }
-    }
-
-    func turnOffLight() {
-        let funcArgs = [""]
-        self.photon?.callFunction("lightsOff", withArguments: funcArgs) { (resultCode : NSNumber?, error : Error?) -> Void in
-            if (error == nil) {
-                print("lightsOff particle function called")
-            }
-            else{
-                print("lightsOff particle function error")
+                print("unlock particle function error")
             }
         }
     }
@@ -458,11 +485,13 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             print("right")
             // open box
             // hide keypad
-            turnOnLight()
+            hideKeypad()
+            unlockBox()
+            startCheckingForClose()
             clearCode()
         } else {
             print ("wrong")
-            turnOffLight()
+            lockBox()
             // possibly show red lights or something
             clearCode()
         }
@@ -470,6 +499,40 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
 
     func clearCode() {
         entry = ""
+    }
+    
+    func hideKeypad() {
+        for node in self.keypadNodes {
+            node.isHidden = true
+        }
+    }
+    
+    func showKeypad() {
+        for node in self.keypadNodes {
+            node.isHidden = false
+        }
+    }
+    
+    func startCheckingForClose() {
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: (#selector(ViewController.checkforClose)), userInfo: nil, repeats: true)
+    }
+    
+    @objc func checkforClose() {
+        //hit the particle api and look for variable
+        self.photon?.getVariable("closed", completion: { (result: Any?, error: Error?) -> Void in
+            if let _ = error {
+                print("Error getting value of closed")
+            } else {
+                if let closed = result as? Bool {
+                    print("closed ", closed)
+                    if (closed) {
+                        //show keypad again, lock box
+                        self.showKeypad()
+                        self.lockBox()
+                    }
+                }
+            }
+        })
     }
 }
 
