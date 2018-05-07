@@ -28,9 +28,11 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     var detectedCenterAnchor: ARAnchor?
     var processing = false
     var created = false
-    let QR1 = "picasso"
+    let QR1 = "ar-irl"
     
+    // lock logic
     var timer = Timer()
+    var openedFirst = false
     
     // Photon setup
     var photon: ParticleDevice?
@@ -514,21 +516,25 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     }
     
     func startCheckingForClose() {
-        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: (#selector(ViewController.checkforClose)), userInfo: nil, repeats: true)
+        self.timer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: (#selector(ViewController.checkforClose)), userInfo: nil, repeats: true)
     }
     
     @objc func checkforClose() {
-        //hit the particle api and look for variable
+        // technically checking for open and close here
+        // hit the particle api and look for variable
         self.photon?.getVariable("closed", completion: { (result: Any?, error: Error?) -> Void in
             if let _ = error {
                 print("Error getting value of closed")
             } else {
                 if let closed = result as? Bool {
                     print("closed ", closed)
-                    if (closed) {
-                        //show keypad again, lock box
+                    if (!closed && !self.openedFirst) {
+                        self.openedFirst = true
+                    } else if (closed && self.openedFirst) {
+                        //show keypad again, lock box, reset opened first
                         self.showKeypad()
                         self.lockBox()
+                        self.openedFirst = false
                     }
                 }
             }
