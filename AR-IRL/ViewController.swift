@@ -129,14 +129,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
 
         // Create a Barcode Detection Request
         let request = VNDetectBarcodesRequest { (request, error) in
-
+            
             // Get the first result out of the results, if there are any
             if let results = request.results, let result = results.first as? VNBarcodeObservation {
-                print("<qr>")
-                print(result.barcodeDescriptor!)
-                print(result.payloadStringValue ?? "nope")
-                print(result.symbology._rawValue)
-                print("</qr>")
                 // Get the bounding box for the bar code and find the center
                 var rect = result.boundingBox
 
@@ -150,7 +145,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
                 // Go back to the main thread
                 DispatchQueue.main.async {
                     if result.payloadStringValue ?? "nope" == self.QR1 {
-                        //picasso
                         // Perform a hit test on the ARFrame to find a surface
                         let hitTestCenterResults = frame.hitTest(center, types: [.featurePoint/*, .estimatedHorizontalPlane, .existingPlane, .existingPlaneUsingExtent*/] )
                         // If we have a result, process it
@@ -160,13 +154,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
                             if let detectedCenterAnchor = self.detectedCenterAnchor,
                                 let node = self.sceneView.node(for: detectedCenterAnchor) {
                                 node.transform = SCNMatrix4(hitTestCenterResult.worldTransform)
-                                print("<center>")
-                                print(node.rotation)
-                                print(node.orientation)
-                                print(node.position)
-                                print(node.eulerAngles)
-                                print(node.transform)
-                                print("</center>")
                             } else {
                                 // Create an anchor. The node will be created in delegate methods
                                 self.detectedCenterAnchor = ARAnchor(transform: hitTestCenterResult.worldTransform)
@@ -414,26 +401,28 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     func lockBox() {
         self.timer.invalidate()
         let funcArgs = [""]
-        self.photon?.callFunction("lock", withArguments: funcArgs) { (resultCode : NSNumber?, error : Error?) -> Void in
-            if (error == nil) {
-                print("lock particle function called")
+        self.photon?.callFunction("lock", withArguments: funcArgs)
+            { (resultCode : NSNumber?, error : Error?) -> Void in
+                if (error == nil) {
+                    print("lock particle function called")
+                }
+                else{
+                    print("lock particle function error")
+                }
             }
-            else{
-                print("lock particle function error")
-            }
-        }
     }
     
     func unlockBox() {
         let funcArgs = [""]
-        self.photon?.callFunction("unlock", withArguments: funcArgs) { (resultCode : NSNumber?, error : Error?) -> Void in
-            if (error == nil) {
-                print("unlock particle function called")
+        self.photon?.callFunction("unlock", withArguments: funcArgs)
+            { (resultCode : NSNumber?, error : Error?) -> Void in
+                if (error == nil) {
+                    print("unlock particle function called")
+                }
+                else{
+                    print("unlock particle function error")
+                }
             }
-            else{
-                print("unlock particle function error")
-            }
-        }
     }
 
     @IBAction func connectToParticleButton(_ sender: Any) {
